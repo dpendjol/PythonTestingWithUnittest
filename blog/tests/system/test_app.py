@@ -3,6 +3,7 @@ from unittest import TestCase
 from unittest.mock import patch
 import app
 from blog import Blog
+from post import Post
 
 class AppTests(TestCase):
 
@@ -37,13 +38,28 @@ class AppTests(TestCase):
     def test_ask_read_blog(self):
         blog = Blog('Test', 'Test Author')
         app.blogs = {'Test': blog}
-        with patch('builints.input', return_value='Test'):
+        with patch('builtins.input', return_value='Test'):
             with patch('app.print_posts') as mocked_print_posts:
                 app.ask_read_blog()
                 mocked_print_posts.assert_called_with(blog)
     
-    # def test_print_post(self):
-    #     blog = Blog('Test', 'Test Author')
-    #     app.blogs = {'Test': blog}
-    #     with patch(app.print_posts(post)) as mocked_print_posts:
-    #         app.print_posts(blog)
+    def test_print_posts(self):
+        blog = Blog('Test', 'Test Author')
+        blog.create_post('Test post', 'Test content')
+        app.blogs = {'Test': blog}
+        with patch('app.print_post') as mocked_print_post:
+            app.print_posts(blog)
+            mocked_print_post.assert_called_with(blog.posts[0])
+            
+    def test_print_posts(self):
+        post = Post('Post title', 'Post content')
+        expected = '''
+          --- Post title ---
+          
+          Post content
+          
+          '''
+        with patch('builtins.print') as mocked_print:
+            app.print_post(post)
+            
+            mocked_print.assert_called_with(expected)

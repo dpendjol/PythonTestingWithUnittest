@@ -45,7 +45,7 @@ def ask_read_blog():
 
 def print_posts(blog):
     for post in blog.posts:
-        print_posts(post)
+        print_post(post)
         
 def print_post(post):
     print(POST_TEMPLATE.format(post.title, post.content))
