@@ -7,13 +7,13 @@ from blog import Blog
 class AppTests(TestCase):
 
     def test_menu_print_prompts(self):
-        with patch('builtins.input') as mocked_input:
+        with patch('builtins.input', return_value='q') as mocked_input:
             app.menu()
             mocked_input.assert_called_with(app.MENU_PROMPT)
 
     def test_menu_call_print_blogs(self):
         with patch('app.print_blogs') as mocked_print_blogs:
-            with patch('builtins.input') as mocked_input:
+            with patch('builtins.input', return_value='q') as mocked_input:
                 app.menu()
                 mocked_print_blogs.assert_called()
 
@@ -41,3 +41,9 @@ class AppTests(TestCase):
             with patch('app.print_posts') as mocked_print_posts:
                 app.ask_read_blog()
                 mocked_print_posts.assert_called_with(blog)
+    
+    # def test_print_post(self):
+    #     blog = Blog('Test', 'Test Author')
+    #     app.blogs = {'Test': blog}
+    #     with patch(app.print_posts(post)) as mocked_print_posts:
+    #         app.print_posts(blog)
