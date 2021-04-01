@@ -7,6 +7,10 @@ from post import Post
 
 class AppTests(TestCase):
 
+    def setUp(self):
+        blog = Blog('Test', 'Test Author')
+        app.blogs = {'Test': blog}
+    
     def test_menu_calls_create_blog(self):
         with patch('builtins.input') as mocked_input:
             mocked_input.side_effect = ('c', 'Test title', 'Test author', 'q')
@@ -23,8 +27,6 @@ class AppTests(TestCase):
                 mocked_input.assert_called()
 
     def test_menu_calls_ask_read_blog(self):
-        blog = Blog('Test', 'Test Author')
-        app.blogs = {'Test': blog}
         
         with patch('builtins.input') as mocked_input:
             with patch('app.print_posts') as mocked_print_posts:
@@ -34,8 +36,6 @@ class AppTests(TestCase):
                 mocked_print_posts.assert_called_with(app.blogs['Test'])
 
     def test_menu_calls_ask_create_post(self):
-        blog = Blog('Test', 'Test Author')
-        app.blogs = {'Test': blog}
         with patch('builtins.input') as mocked_input:
             mocked_input.side_effect = ('p', 'Test', 'Test title', 'Test content', 'q')
             app.menu()
@@ -58,14 +58,9 @@ class AppTests(TestCase):
                 mocked_print_blogs.assert_called()
 
     def test_print_blogs(self):
-        b = Blog('Test', 'Test author')
-        b2 = Blog('Test 2', 'Test author')
-        b3 = Blog('Test 3', 'Test author')
-        app.blogs = {'Test': b}
-        
         with patch('builtins.print') as mocked_print:
             app.print_blogs()
-            mocked_print.assert_called_with('- Test by Test author (0 posts)')
+            mocked_print.assert_called_with('- Test by Test Author (0 posts)')
 
     def test_ask_create_blog(self):
         with patch('builtins.input') as mocked_input:
@@ -75,17 +70,14 @@ class AppTests(TestCase):
             self.assertIsNotNone(app.blogs.get('Test'))
 
     def test_ask_read_blog(self):
-        blog = Blog('Test', 'Test Author')
-        app.blogs = {'Test': blog}
         with patch('builtins.input', return_value='Test'):
             with patch('app.print_posts') as mocked_print_posts:
                 app.ask_read_blog()
-                mocked_print_posts.assert_called_with(blog)
+                mocked_print_posts.assert_called_with(app.blogs['Test'])
     
     def test_print_posts(self):
-        blog = Blog('Test', 'Test Author')
+        blog = app.blogs['Test']
         blog.create_post('Test post', 'Test content')
-        app.blogs = {'Test': blog}
         with patch('app.print_post') as mocked_print_post:
             app.print_posts(blog)
             mocked_print_post.assert_called_with(blog.posts[0])
@@ -104,12 +96,10 @@ class AppTests(TestCase):
             mocked_print.assert_called_with(expected)
     
     def test_ask_create_post(self):
-        blog = Blog('Test', 'Test Author')
-        app.blogs = {'Test': blog}
         with patch('builtins.input') as mocked_input:
             mocked_input.side_effect = ('Test', 'Test title', 'Test content')
             app.ask_create_post()
             
-            self.assertEqual(blog.posts[0].title, 'Test title')
-            self.assertEqual(blog.posts[0].content, 'Test content')
+            self.assertEqual(app.blogs['Test'].posts[0].title, 'Test title')
+            self.assertEqual(app.blogs['Test'].posts[0].content, 'Test content')
             
