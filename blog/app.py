@@ -21,23 +21,23 @@ def menu():
     while selection != 'q':
         if selection == 'c':
             ask_create_blog()
-        if selection == 'l':
+        elif selection == 'l':
             print_blogs()
-        if selection == 'r':
+        elif selection == 'r':
             ask_read_blog()
-        if selection == 'p':
+        elif selection == 'p':
             ask_create_post()
         selection = input(MENU_PROMPT)
     
+def print_blogs():
+    for key, blog in blogs.items():
+        print(f"- {blog}")
+
 def ask_create_blog():
     blog_title = input('Title of the blog? ')
     blog_author = input('whats your name? ')
     
     blogs[blog_title] = Blog(blog_title, blog_author)
-    
-def print_blogs():
-    for key, blog in blogs.items():
-        print(f"- {blog}")
 
 def ask_read_blog():
     title = input('enter the blog title')
@@ -49,6 +49,7 @@ def print_posts(blog):
         
 def print_post(post):
     print(POST_TEMPLATE.format(post.title, post.content))
+
 def ask_create_post():
     pass
 

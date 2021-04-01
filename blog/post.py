@@ -11,4 +11,4 @@ class Post:
         return {
                 'title': self.title,
                 'content': self.content,
-               }
+                }
