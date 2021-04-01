@@ -6,6 +6,27 @@ from blog import Blog
 from post import Post
 
 class AppTests(TestCase):
+    
+    def test_menu_calls_create_blog(self):
+        with patch('builtins.input') as mocked_input:
+            mocked_input.side_effect = ('c', 'Test title', 'Test author', 'q')
+            app.menu()
+            
+            self.assertIsNotNone(app.blogs['Test title'])
+    
+    def test_menu_calls_print_blogs(self):
+        pass
+    
+    def test_menu_calls_ask_read_blog(self):
+        blog = Blog('Test', 'Test Author')
+        app.blogs = {'Test': blog}
+        
+        with patch('builtins.input') as mocked_input:
+            with patch('app.print_posts') as mocked_print_posts:
+                mocked_input.side_effect = ('r', 'Test', 'q')
+                app.menu()
+                
+                mocked_print_posts.assert_called_with(app.blogs['Test'])
 
     def test_menu_print_prompts(self):
         with patch('builtins.input', return_value='q') as mocked_input:
@@ -63,3 +84,14 @@ class AppTests(TestCase):
             app.print_post(post)
             
             mocked_print.assert_called_with(expected)
+    
+    def test_ask_create_post(self):
+        blog = Blog('Test', 'Test Author')
+        app.blogs = {'Test': blog}
+        with patch('builtins.input') as mocked_input:
+            mocked_input.side_effect = ('Test', 'Test title', 'Test content')
+            app.ask_create_post()
+            
+            self.assertEqual(blog.posts[0].title, 'Test title')
+            self.assertEqual(blog.posts[0].content, 'Test content')
+            
