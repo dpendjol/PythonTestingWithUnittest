@@ -1,4 +1,5 @@
 from blog import Blog
+from post import Post
 
 MENU_PROMPT = 'Enter "c" to create a blog, "l" to list blogs, "r" to read one, "p" to create a post, or "q" to quit.'
 POST_TEMPLATE = '''
@@ -51,8 +52,10 @@ def print_post(post):
     print(POST_TEMPLATE.format(post.title, post.content))
 
 def ask_create_post():
-    pass
-
+    blog_title = input('Which blog do you want to post to? ')
+    title = input('What is the title? ')
+    content = input('What is the content? ')
+    blogs[blog_title].create_post(title, content)
         
 if __name__ == "__main__":
     print_blogs()
